@@ -1,18 +1,45 @@
 include irvine32.inc
 .data
+array SWORD 10,20,33,40,55
+sum dword 0
+count dword 0
 
-; array and other variables declaration here
+msgSum BYTE "The sum of even numbers is: ", 0
+msgCount BYTE "The total no of even numbers is: ", 0
 
 .code
 main proc
+    mov esi, OFFSET array
+    mov ecx, LENGTHOF array
 
+next:
+   ; Test the least significant bit of the number to check if it is even
+    test WORD PTR [esi], 1
+    jnz skip
 
-;code here
+    movsx eax, WORD PTR [esi]
+  ; Add the even number to the sum
+    add [sum], eax
+    inc [count]
 
+skip:
+    add esi, TYPE array
+    loopnz next
 
+    mov edx, OFFSET msgSum
+    call writestring
+  ; Display the sum
+    mov eax, [sum]
+    call WriteInt
+    call crlf
 
-exit
-main endp
+    mov edx, OFFSET msgCount
+    call writestring
+ ; Display the numbers
+    mov eax, [count]
+    call writedec
+    call crlf
 
-
-end main
+    exit
+main endp
+end main
